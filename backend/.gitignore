@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.neurolearn.db
+neurolearn.db
+.venv/
+.env
