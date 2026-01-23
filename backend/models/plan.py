@@ -16,9 +16,9 @@ if TYPE_CHECKING:
 class PlanStep(Base):
     __tablename__ = "plan_steps"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    block_id: Mapped[int] = mapped_column(ForeignKey("plan_blocks.id", ondelete="CASCADE"))
-    content_id: Mapped[Optional[int]] = mapped_column(ForeignKey("content_units.id"), nullable=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    block_id: Mapped[int] = mapped_column(ForeignKey("plan_blocks.id", ondelete="CASCADE"), index=True)
+    content_id: Mapped[Optional[int]] = mapped_column(ForeignKey("content_units.id"), nullable=True, index=True)
     description: Mapped[dict] = mapped_column(JSON, default=dict)
     status: Mapped[dict] = mapped_column(JSON, default=dict)
 
@@ -29,11 +29,11 @@ class PlanStep(Base):
 class PlanBlock(Base):
     __tablename__ = "plan_blocks"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    goal_id: Mapped[int] = mapped_column(ForeignKey("goals.id", ondelete="CASCADE"))
-    date: Mapped[date] = mapped_column(Date, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    goal_id: Mapped[int] = mapped_column(ForeignKey("goals.id", ondelete="CASCADE"), index=True)
+    date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     meta: Mapped[dict] = mapped_column(JSON, default=dict)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False, index=True)
 
     goal: Mapped["Goal"] = relationship(back_populates="plan_blocks")
     steps: Mapped[List[PlanStep]] = relationship(

@@ -18,10 +18,6 @@ def create_review(payload: schemas.ReviewCreate, session: Session = Depends(get_
     """Create a new review for a content unit."""
     logger.info(f"Creating review for content {payload.content_id} with ease {payload.ease}")
     
-    # Validate ease value
-    if not (1 <= payload.ease <= 5):
-        raise ValidationError("Ease must be between 1 and 5")
-    
     content = session.get(models.ContentUnit, payload.content_id)
     if not content:
         raise ResourceNotFoundError("Content", payload.content_id)
@@ -43,10 +39,6 @@ def create_review(payload: schemas.ReviewCreate, session: Session = Depends(get_
 def update_review(review_id: int, payload: schemas.ReviewUpdate, session: Session = Depends(get_session)):
     """Update a review and get feedback."""
     logger.info(f"Updating review {review_id} with ease {payload.ease}")
-    
-    # Validate ease value
-    if not (1 <= payload.ease <= 5):
-        raise ValidationError("Ease must be between 1 and 5")
     
     review = session.get(models.Review, review_id)
     if not review:

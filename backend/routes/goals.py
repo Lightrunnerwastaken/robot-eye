@@ -5,9 +5,8 @@ from sqlalchemy.orm import Session
 
 from backend import models, schemas
 from backend.dependencies import get_session
-from backend.exceptions import ResourceNotFoundError, ValidationError
+from backend.exceptions import ResourceNotFoundError
 from backend.logging_config import logger
-from backend.models.goal import difficulties as allowed_difficulties
 
 router = APIRouter(prefix="/goals", tags=["goals"])
 
@@ -24,12 +23,7 @@ def list_goals(session: Session = Depends(get_session)):
 @router.post("/", response_model=schemas.GoalRead)
 def create_goal(goal: schemas.GoalCreate, session: Session = Depends(get_session)):
     """Create a new learning goal."""
-    logger.info(f"Creating goal: {goal.title}")
-    
-    if goal.difficulty not in allowed_difficulties:
-        raise ValidationError(
-            f"Invalid difficulty '{goal.difficulty}'. Must be one of: {', '.join(allowed_difficulties)}"
-        )
+    logger.info(f"Creating goal: {goal.subject} - {goal.topic}")
     
     try:
         db_goal = models.Goal(**goal.model_dump())
