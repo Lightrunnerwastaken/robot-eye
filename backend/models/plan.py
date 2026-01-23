@@ -1,35 +1,39 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import List
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import JSON, Date, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.database import Base
 
+if TYPE_CHECKING:
+    from backend.models.content import ContentUnit
+    from backend.models.goal import Goal
+
 
 class PlanStep(Base):
     __tablename__ = "plan_steps"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    block_id: Mapped[int] = mapped_column(ForeignKey("plan_blocks.id", ondelete="CASCADE"))
-    content_id: Mapped[int | None] = mapped_column(ForeignKey("content_units.id"), nullable=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    block_id: Mapped[int] = mapped_column(ForeignKey("plan_blocks.id", ondelete="CASCADE"), index=True)
+    content_id: Mapped[Optional[int]] = mapped_column(ForeignKey("content_units.id"), nullable=True, index=True)
     description: Mapped[dict] = mapped_column(JSON, default=dict)
     status: Mapped[dict] = mapped_column(JSON, default=dict)
 
     block: Mapped["PlanBlock"] = relationship(back_populates="steps")
-    content: Mapped["ContentUnit" | None] = relationship()
+    content: Mapped[Optional["ContentUnit"]] = relationship()
 
 
 class PlanBlock(Base):
     __tablename__ = "plan_blocks"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    goal_id: Mapped[int] = mapped_column(ForeignKey("goals.id", ondelete="CASCADE"))
-    date: Mapped[date] = mapped_column(Date, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    goal_id: Mapped[int] = mapped_column(ForeignKey("goals.id", ondelete="CASCADE"), index=True)
+    date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     meta: Mapped[dict] = mapped_column(JSON, default=dict)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False, index=True)
 
     goal: Mapped["Goal"] = relationship(back_populates="plan_blocks")
     steps: Mapped[List[PlanStep]] = relationship(
