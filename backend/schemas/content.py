@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ContentUnitBase(BaseModel):
@@ -20,6 +20,5 @@ class ContentUnitCreate(ContentUnitBase):
 class ContentUnitRead(ContentUnitBase):
     id: int
     created_at: datetime
-
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)

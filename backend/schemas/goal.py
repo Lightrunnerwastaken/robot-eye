@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from datetime import date, datetime
+from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class GoalBase(BaseModel):
@@ -10,7 +11,7 @@ class GoalBase(BaseModel):
     topic: str = Field(..., max_length=200)
     exam_date: date
     difficulty: str
-    notes: str | None = None
+    notes: Optional[str] = None
 
 
 class GoalCreate(GoalBase):
@@ -20,6 +21,5 @@ class GoalCreate(GoalBase):
 class GoalRead(GoalBase):
     id: int
     created_at: datetime
-
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)

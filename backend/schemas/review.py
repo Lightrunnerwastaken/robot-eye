@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from .content import ContentUnitRead
 
@@ -24,12 +25,11 @@ class ReviewRead(ReviewBase):
     id: int
     next_due: datetime
     updated_at: datetime
-
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ReviewFeedback(BaseModel):
     review: ReviewRead
-    expanded_content: ContentUnitRead | None = None
-    micro_drill: ContentUnitRead | None = None
+    expanded_content: Optional[ContentUnitRead] = None
+    micro_drill: Optional[ContentUnitRead] = None
